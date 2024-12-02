@@ -14,3 +14,33 @@ func Sum(list []int) int {
     }
     return total
 }
+
+func All(list []int, f func(x int) bool) bool {
+    for _, num := range list {
+        if !f(num) {
+            return false
+        }
+    }
+    return true
+}
+
+func Count(list []int, f func(x int) bool) int {
+    i := 0
+    for _, num := range list {
+        if f(num) {
+            i++
+        }
+    }
+    return i
+}
+
+func Remove(list []int, index int) []int {
+    var result []int
+    for i, item := range list {
+        if i == index {
+            continue
+        }
+        result = append(result, item)
+    }
+    return result
+}
