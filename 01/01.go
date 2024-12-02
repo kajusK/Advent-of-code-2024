@@ -7,22 +7,8 @@ import (
 	"strconv"
 	"strings"
     "sort"
+    "aoc/utils"
 )
-
-func abs(val int) int {
-    if val > 0 {
-        return val
-    }
-    return -val
-}
-
-func sum(list []int) int {
-    total := 0
-    for _, num := range list {
-        total += num
-    }
-    return total
-}
 
 func totalCount(list []int, search int) int {
     count := 0
@@ -41,10 +27,10 @@ func part1(left []int, right []int) int {
     sort.Ints(left)
     sort.Ints(right)
     for i := 0; i < len(left); i++ {
-        result = append(result, abs(left[i] - right[i]))
+        result = append(result, utils.Abs(left[i] - right[i]))
     }
 
-    return sum(result)
+    return utils.Sum(result)
 }
 
 func part2(left []int, right []int) int {
