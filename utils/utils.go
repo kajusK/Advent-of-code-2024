@@ -44,3 +44,23 @@ func Remove(list []int, index int) []int {
     }
     return result
 }
+
+func Insert(list []int, index int, value int) []int {
+    var result []int
+    for i, item := range list {
+        if i == index {
+            result = append(result, value)
+        }
+        result = append(result, item)
+    }
+    return result
+}
+
+func IndexOf(list []int, value int) int {
+    for i, item := range list {
+        if item == value {
+            return i
+        }
+    }
+    return -1
+}
