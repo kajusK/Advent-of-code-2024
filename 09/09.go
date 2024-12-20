@@ -12,49 +12,13 @@ type File struct {
 	orig_pos int
 }
 
-func space_index(data []int) int {
-	for i, _ := range data {
-		if data[i] == -1 {
-			return i
-		}
-	}
-	return -1
-}
-
-func checksum(data []int) int {
-	res := 0
-	for i, val := range data {
-		if val != -1 {
-			res += i*val
-		}
-	}
-	return res
-}
-
-func part1(data []int) int {
-	pos := len(data) - 1
-
-	for pos > 0 {
-		first_space := space_index(data)
-		if first_space > pos {
-			break
-		}
-		if data[pos] != -1 {
-			data[first_space] = data[pos]
-			data[pos] = -1 
-		}
-		pos--
-	}
-	return checksum(data)
-}
-
 func find_space(data []int, size int) int {
 	space_size := 0
 	for i := 0; i < len(data); i++ {
+		if space_size >= size {
+			return i - space_size
+		}
 		if data[i] != -1 {
-			if space_size >= size {
-				return i - space_size
-			}
 			space_size = 0
 			continue
 		}
@@ -71,22 +35,44 @@ func move_file(data []int, file File, pos int) []int {
 	return data
 }
 
+func checksum(data []int) int {
+	res := 0
+	for i, val := range data {
+		if val != -1 {
+			res += i*val
+		}
+	}
+	return res
+}
+
+func copy_arr(in []int) []int {
+	res := make([]int, len(in))
+	copy(res, in)
+	return res
+}
+
 func part2(data []int, files []File) int {
-	for i := len(files)-1; i > 0; i-- {
+	for i := len(files) - 1; i > 0; i-- {
 		file := files[i]
-		pos := find_space(data, file.size)
-		if pos == -1 || pos > file.orig_pos {
+		space := find_space(data, file.size)
+		if space == -1 || space > file.orig_pos {
 			continue
 		}
-		data = move_file(data, file, pos)
+		data = move_file(data, file, space)
 	}
 	return checksum(data)
 }
 
-func copyArr(in []int) []int {
-	res := make([]int, len(in))
-	copy(res, in)
-	return res
+func part1(data []int) int {
+	for pos := len(data) - 1; pos > 0; pos-- {
+		space := find_space(data, 1)
+		if space == -1 || space > pos {
+			break
+		}
+		data[space] = data[pos]
+		data[pos] = -1 
+	}
+	return checksum(data)
 }
 
 func main() {
@@ -104,7 +90,6 @@ func main() {
 		size := int(input[id*2] - '0')
 		space := int(input[id*2+1] - '0')
 		files = append(files, File{size: size, id: id, orig_pos: pos})
-		pos += size + space
 
 		for i := 0; i < size; i++ {
 			data = append(data, id)
@@ -112,8 +97,9 @@ func main() {
 		for i := 0; i < space; i++ {
 			data = append(data, -1)
 		}
+		pos += size + space
 	}
 
-	fmt.Println("Part 1: ", part1(copyArr(data)))
-	fmt.Println("Part 2: ", part2(copyArr(data), files))
+	fmt.Println("Part 1: ", part1(copy_arr(data)))
+	fmt.Println("Part 2: ", part2(copy_arr(data), files))
 }
